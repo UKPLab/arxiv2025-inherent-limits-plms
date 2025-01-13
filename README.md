@@ -2,11 +2,11 @@
   <img src='logo.png' width='200'>
 </p>
 
-# ukp_project_template
+# arxiv2025_inherent_limits_plms
 [![Arxiv](https://img.shields.io/badge/Arxiv-YYMM.NNNNN-red?style=flat-square&logo=arxiv&logoColor=white)](https://put-here-your-paper.com)
-[![License](https://img.shields.io/github/license/UKPLab/ukp-project-template)](https://opensource.org/licenses/Apache-2.0)
+[![License](https://img.shields.io/github/license/UKPLab/arxiv2025-inherent-limits-plms)](https://opensource.org/licenses/Apache-2.0)
 [![Python Versions](https://img.shields.io/badge/Python-3.9-blue.svg?style=flat&logo=python&logoColor=white)](https://www.python.org/)
-[![CI](https://github.com/UKPLab/ukp-project-template/actions/workflows/main.yml/badge.svg)](https://github.com/UKPLab/ukp-project-template/actions/workflows/main.yml)
+[![CI](https://github.com/UKPLab/arxiv2025-inherent-limits-plms/actions/workflows/main.yml/badge.svg)](https://github.com/UKPLab/arxiv2025-inherent-limits-plms/actions/workflows/main.yml)
 
 This is the official template for new Python projects at UKP Lab. It was adapted for the needs of UKP Lab from the excellent [python-project-template](https://github.com/rochacbruno/python-project-template/) by [rochacbruno](https://github.com/rochacbruno).
 
@@ -48,7 +48,7 @@ pip install -r requirements-dev.txt # Only needed for development
 
 ### Using the classes
 
-To import classes/methods of `ukp_project_template` from inside the package itself you can use relative imports: 
+To import classes/methods of `arxiv2025_inherent_limits_plms` from inside the package itself you can use relative imports: 
 
 ```py
 from .base import BaseClass # Notice how I omit the package name
@@ -59,8 +59,8 @@ BaseClass().something()
 To import classes/methods from outside the package (e.g. when you want to use the package in some other project) you can instead refer to the package name:
 
 ```py
-from ukp_project_template import BaseClass # Notice how I omit the file name
-from ukp_project_template.subpackage import SubPackageClass # Here it's necessary because it's a subpackage
+from arxiv2025_inherent_limits_plms import BaseClass # Notice how I omit the file name
+from arxiv2025_inherent_limits_plms.subpackage import SubPackageClass # Here it's necessary because it's a subpackage
 
 BaseClass().something()
 SubPackageClass().something()
@@ -68,10 +68,10 @@ SubPackageClass().something()
 
 ### Using scripts
 
-This is how you can use `ukp_project_template` from command line:
+This is how you can use `arxiv2025_inherent_limits_plms` from command line:
 
 ```bash
-$ python -m ukp_project_template
+$ python -m arxiv2025_inherent_limits_plms
 ```
 
 ### Expected results

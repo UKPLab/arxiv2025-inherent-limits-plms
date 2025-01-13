@@ -1,6 +1,6 @@
 # Tests are defined here
-from ukp_project_template import BaseClass
-from ukp_project_template.subpackage import SubPackageClass
+from arxiv2025_inherent_limits_plms import BaseClass
+from arxiv2025_inherent_limits_plms.subpackage import SubPackageClass
 
 def test_template():
     assert True

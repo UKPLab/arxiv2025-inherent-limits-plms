@@ -18,4 +18,4 @@ For full documentation visit [mkdocs.org](https://www.mkdocs.org).
 
 ## Docs
 
-::: ukp_project_template
+::: arxiv2025_inherent_limits_plms
