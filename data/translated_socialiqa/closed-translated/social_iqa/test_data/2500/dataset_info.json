@@ -1,0 +1,71 @@
+{
+  "builder_name": "bigbench",
+  "citation": "\n@article{srivastava2022beyond,\n  title={Beyond the imitation game: Quantifying and extrapolating the capabilities of language models},\n  author={Srivastava, Aarohi and Rastogi, Abhinav and Rao, Abhishek and Shoeb, Abu Awal Md and Abid, Abubakar and Fisch, Adam and Brown, Adam R and Santoro, Adam and Gupta, Aditya and Garriga-Alonso, Adri{\\`a} and others},\n  journal={arXiv preprint arXiv:2206.04615},\n  year={2022}\n}\n\n\n@article{srivastava2022beyond,\n  title={Beyond the imitation game: Quantifying and extrapolating the capabilities of language models},\n  author={Srivastava, Aarohi and Rastogi, Abhinav and Rao, Abhishek and Shoeb, Abu Awal Md and Abid, Abubakar and Fisch, Adam and Brown, Adam R and Santoro, Adam and Gupta, Aditya and Garriga-Alonso, Adri{\\`a} and others},\n  journal={arXiv preprint arXiv:2206.04615},\n  year={2022}\n}\n",
+  "config_name": "social_iqa",
+  "dataset_name": "bigbench",
+  "dataset_size": 643162,
+  "description": "bigbench json tasks\n",
+  "download_checksums": {
+    "https://www.dropbox.com/s/cjdywlalikdb1c6/bigbench.zip?dl=1": {
+      "num_bytes": 176691644,
+      "checksum": null
+    }
+  },
+  "download_size": 176691644,
+  "features": {
+    "text": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "labels": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "multiple_choice_targets": {
+      "feature": {
+        "dtype": "string",
+        "_type": "Value"
+      },
+      "_type": "Sequence"
+    },
+    "multiple_choice_scores": {
+      "feature": {
+        "dtype": "int32",
+        "_type": "Value"
+      },
+      "_type": "Sequence"
+    },
+    "idx": {
+      "dtype": "int32",
+      "_type": "Value"
+    },
+    "adv_labels": {
+      "dtype": "string",
+      "_type": "Value"
+    }
+  },
+  "homepage": "https://github.com/google/BIG-bench",
+  "license": "",
+  "size_in_bytes": 177334806,
+  "splits": {
+    "train": {
+      "name": "train",
+      "num_bytes": 515686,
+      "num_examples": 1548,
+      "dataset_name": "bigbench"
+    },
+    "validation": {
+      "name": "validation",
+      "num_bytes": 127476,
+      "num_examples": 387,
+      "dataset_name": "bigbench"
+    }
+  },
+  "version": {
+    "version_str": "1.0.0",
+    "description": "",
+    "major": 1,
+    "minor": 0,
+    "patch": 0
+  }
+}
