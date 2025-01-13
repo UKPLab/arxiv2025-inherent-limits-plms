@@ -24,109 +24,119 @@ source .venv/bin/activate
 pip install .
 pip install -r requirements.txt
 ```
+We recommend using a separate virtual environment, since we use [vLLM](https://docs.vllm.ai/en/stable/) for speeding up inference. As stated in their documentation, it is recommended to install vLLM in a fresh environment, since it compiles specific CUDA versions that may be incompatible with preexisting environments.
+
+The current version of the code is designed to run as individual modules called by scripts. Sample scripts can be found in the `scripts` folder. Model training and inference is designed to run on a SLURM scheduling system. In particular, a `$SLURM_JOB_ID` is needed in all scripts, and is additionally invoked by `train.py` to record run info, as well as by `test.py` and `bertscore.py` to retrieve relevant evaluation files.
+
+## Reproducing the Experiments
 
 Our experiments can be reproduced in the following steps:
 
-* Dataset Creation
-  * Task Dataset Creation
-  * Training Mixture Generation
-* Model Training 
-
+1. Dataset Creation
+2. Model Training
 
 ## Dataset Creation
 
 We reproduce the [FLAN dataset](https://arxiv.org/pdf/2109.01652) based on the [code of the authors](https://github.com/google-research/FLAN/tree/main/flan), which was distributed under the Apache 2.0 License. Our implementation is based on [HuggingFace Datasets](https://huggingface.co/docs/hub/en/datasets). For each task in the original FLAN, we found the equivalent in HuggingFace Datasets and reimplemented the preprocesing in the original code to the best of our ability. However, due to the differing data sources, we note that the contents of our version may differ slightly. We designate all areas that were modified from the original.
 
-The data loading is handled by `data_utils.py`. This loads all datasets mentioned in [Wei et al., 2022](https://arxiv.org/pdf/2109.01652), although we use only a subset of these for our experiments.
+The data loading is handled by `data_utils.py`. This loads all datasets mentioned in [Wei et al., 2022](https://arxiv.org/pdf/2109.01652), although we use only a subset of these for our experiments. Please see our paper for more details.
 
-The preprocessing and prompt formatting is handled by `create_prompts.py`. This calls `data_utils.py` to load the data, preprocesses it, and finally formats it into one of two prompt types: *Regular Prompt* and *SampleGen Prompt*. 
+The preprocessing and prompt formatting is handled by `create_prompts.py`. This calls `data_utils.py` to load the data, preprocesses it, and finally formats it into one of two prompt types: *Regular Prompt* or *SampleGen Prompt*. 
   * *Regular Prompt* corresponds to the prompt formats of the original FLAN, which are included in `prompts/flan_orig.py`.
-  * *SampleGen Prompt* corresponds to the prompt format we develop in the paper for training our SampleGen models. 
+  * *SampleGen Prompt* corresponds to the prompt format that we develop for training our SampleGen models. 
 
 The resulting dataset is saved to disk.
 
-### Creating and Saving a Dataset
+Since we instruction-tune our models with many prompt variations, we must create separate datasets or each variation. In all cases, the procedure is the same:
 
-Since we instruction-tune our models with many prompt variations, we must create individual training datasets for each variation. Once the datasets are 
+1. Generate individual task datasets
+2. Create a training mixture from the individual tasks
 
-many prompt variations and modifications, which are all saved as individual datasets `create_prompts.py` generates 
-To create and save a dataset, call the `gen_all_tasks`function from the terminal.
+### Step 1: Generate Individual Task Datasets
 
-#### Parameter description
+First, we create and save datasets for each of our tasks, as listed in `config.py`. To generate the datasets, call the `gen_all_tasks` function from the terminal and set the desired parameters. These parameters will specify the prompt format and the amount of data to include from each task. (Note: This does **not** correspond to the amount of data in the final training mixture. This will be specified later.)
 
-* `Dataset Size, --num_data`: The number of samples desired in the training split of the dataset. The size of the validation split will be set accordingly. (This is relevant for creating SampleGen Prompt, since the procedure involves partitioning the training set into two parts.)
-* `SampleGen Prompt, --create_custom_prompts`: Set to `True` for SampleGen Prompt, `False` for Regular Prompt.
-* `Dataset Type, --dataset_type`: Either `train+val` or `test`. Note that both must usually be created.
-* `Make Adversarial, --making_adv`: Set to `True` if the in-context samples for SampleGen should come from a different task than the target.
-* `Gold Pipeline Samples, --for_samplegen_pipeline`: Set to `True` if generating a gold pipeline dataset. This ensures that the samples will be formatted correctly.
+#### Parameter Description
+* `--num_data`: The number of samples desired in the training split of the dataset. The size of the validation split will be set accordingly. (This is relevant for creating SampleGen Prompt, since the procedure involves partitioning the training set into two parts.)
+* `--create_custom_prompts`: Set to `True` for SampleGen Prompt, `False` for Regular Prompt.
+* `--dataset_type`: Either `train+val` or `test`.
+* `--making_adv`: Set to `True` if the in-context samples for SampleGen should come from a different task than the target.
+* `--for_samplegen_pipeline`: Set to `True` if generating a gold pipeline dataset. This ensures that the samples will be formatted correctly.
 
-#### Example: Original FLAN Dataset
-To generate the FLAN dataset as close to the original as possible, set the following arguments. Note that we use Regular Prompt here.
+For our experiments, the following dataset types must be created:
+
+1. Regular Prompt
+2. SampleGen Prompt
+3. Gold Pipeline Test
+
+#### 1: Regular Prompt
+This is our baseline dataset, following the original FLAN dataset in prompt formatting. To ensure that the dataset matches the original FLAN as closely as possible, use all the tasks in `config.py`.
 
 ```py    
 gen_all_tasks(num_data=10,
               create_custom_prompts=False,
               dataset_type="train+val",
-              making_adv=False,
-              for_samplegen_pipeline=False,
               convert_letter_choices=True,
               )
 ```
 
-#### Example: The SampleGen Prompt dataset used in our experiments
+The output will be a folder titled `flan_prompts`.
+
+
+#### 2: SampleGen Prompt
+To create our SampleGen Prompt, set the following arguments. Importantly, we set `create_custom_prompts=True`, which ensures that the samples will be 
 
 ```py    
 gen_all_tasks(num_data=10,
               create_custom_prompts=True,
               dataset_type="train+val",
-              making_adv=False,
-              for_samplegen_pipeline=False,
               convert_letter_choices=True,
               )
 ```
+The output will be a folder titled `samplegen_prompts`.
 
+#### 3: Gold Pipeline Test Set
+
+Our Gold Pipeline experiments require the test set to be of a specific format. This must be generated and saved along with the other datasets. To ensure the correct formatting, both `create_custom_prompts` and `for_samplegen_pipeline` must be set to `True`.
+
+```py    
+gen_all_tasks(num_data=10,
+              create_custom_prompts=True,
+              dataset_type="train+val",
+              for_samplegen_pipeline=True,
+              convert_letter_choices=True,
+              )
+```
+The output will be a folder titled `gold_pipeline_test`.
+
+
+### Step 2: Training Mixture Generation
+Once the individual task datasets are created, we combine these datasets into a *training mixture*. This is done by `make_mixtures.py`. 
 
 ```py
-from .base import BaseClass # Notice how I omit the package name
-
-BaseClass().something()
+  mix_tasks(prompt_format="mix_prompts",
+            do_mixed_gold_pipeline=True,
+            setup_num="4"
+            )
 ```
 
-To import classes/methods from outside the package (e.g. when you want to use the package in some other project) you can instead refer to the package name:
+## Model Training
+Once the dataset(s) have been created, call `train.sh` with the desired parameters, e.g.
 
-```py
-from arxiv2025_inherent_limits_plms import BaseClass # Notice how I omit the file name
-from arxiv2025_inherent_limits_plms.subpackage import SubPackageClass # Here it's necessary because it's a subpackage
-
-BaseClass().something()
-SubPackageClass().something()
 ```
-
-### Using scripts
-
-This is how you can use `arxiv2025_inherent_limits_plms` from command line:
-
-```bash
-$ python -m arxiv2025_inherent_limits_plms
+--slurm_job_id $SLURM_JOB_ID --model_path_idx 1 --model_size_idx 1 --num_epochs 1 --prompts_type 0 --num_train 20000 --batch_size 2
 ```
+The model will be saved to the `saved_models` folder and will have a unique name generated according to the timestamp at the start of training.
 
-### Expected results
+#### Important Parameters
+* `--prompts_type`: The type of prompt to train on, as listed in `train.py`.
 
-After running the experiments, you should expect the following results:
+## Model Testing
+For model testing, call one of the two testing scripts: `test_regularprompt.sh` or `test_samplegen+pipeline.sh`.
 
-(Feel free to describe your expected results here...)
+#### Important Parameters
+* `--run_name`: The unique timestamp of the model in `saved_models`.
 
-### Parameter description
-
-* `x, --xxxx`: This parameter does something nice
-
-* ...
-
-* `z, --zzzz`: This parameter does something even nicer
-
-## Development
-
-Read the FAQs in [ABOUT_THIS_TEMPLATE.md](ABOUT_THIS_TEMPLATE.md) to learn more about how this template works and where you should put your classes & methods. Make sure you've correctly installed `requirements-dev.txt` dependencies
 
 ## Cite
 

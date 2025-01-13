@@ -792,7 +792,8 @@ def run_test(model_name,
 
     elif from_samplegen and sample_source == "model":
         # Test samples already correspond to the needed format; no need for further postprocessing (e.g. translation)
-        # First search for samplegen eval file name; the job id is the same across the 3 runs in test_13B_full.sh
+        # The SLURM job_id is used to retrieve samples from the correct SampleGen output file.
+        # The correct file is determined by having the same job_id as the current run (they were submitted as part of the same job).
         with open(config.eval_log, "r") as eval_logfile:
             info = pd.read_csv(eval_logfile, sep=",")
             for i in range(len(info)):
