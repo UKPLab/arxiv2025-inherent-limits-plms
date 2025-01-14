@@ -1,6 +1,6 @@
 # The Inherent Limits of Pretrained LLMs: The Unexpected Convergence of Instruction Tuning and In-Context Learning Capabilities
 [![Arxiv](https://img.shields.io/badge/Arxiv-YYMM.NNNNN-red?style=flat-square&logo=arxiv&logoColor=white)](https://put-here-your-paper.com)
-[![License](https://img.shields.io/github/license/UKPLab/arxiv2025-inherent-limits-plms)](https://opensource.org/licenses/Apache-2-0)
+[![License](https://img.shields.io/github/license/UKPLab/arxiv2025-inherent-limits-plms)](https://github.com/UKPLab/arxiv2025-inherent-limits-plms?tab=Apache-2.0-1-ov-file)
 [![Python Versions](https://img.shields.io/badge/Python-3.9-blue.svg?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![CI](https://github.com/UKPLab/arxiv2025-inherent-limits-plms/actions/workflows/main.yml/badge.svg)](https://github.com/UKPLab/arxiv2025-inherent-limits-plms/actions/workflows/main.yml)
 
@@ -26,7 +26,30 @@ pip install -r requirements.txt
 ```
 We recommend using a separate virtual environment, since we use [vLLM](https://docs.vllm.ai/en/stable/) for speeding up inference. As stated in their documentation, it is recommended to install vLLM in a fresh environment, since it compiles specific CUDA versions that may be incompatible with preexisting environments.
 
-The current version of the code is designed to run as individual modules called by scripts. Sample scripts can be found in the `scripts` folder. Model training and inference is designed to run on a SLURM scheduling system. In particular, a `$SLURM_JOB_ID` is needed in all scripts, and is additionally invoked by `train.py` to record run info, as well as by `test.py` and `bertscore.py` to retrieve relevant evaluation files.
+The current version of the code is designed to run as individual modules called by Bash scripts. Sample scripts can be found in the `scripts` folder. 
+
+
+### Running on SLURM (Default)
+Model training and inference is designed to run on a SLURM scheduling system. Importantly, a `$SLURM_JOB_ID` is needed in `train.py` to record run info, and is also used by `test.py` and `bertscore.py` to retrieve relevant evaluation files.
+
+To use SLURM, use the scripts in `scripts/with_slurm`.
+
+
+### Running without SLURM
+If SLURM is not available, then `$SLURM_JOB_ID` can be set to the timestamp at the start of runtime. 
+
+For example:
+
+```bash    
+
+export SLURM_JOB_ID=$(date +%Y%m%d_%H%M%S)
+
+python3 create_prompts.py --num_datapoints 100 --create_custom_prompts "True" --dataset_type "train+val"
+
+```
+
+Refer to the scripts in `scripts/without_slurm` for some sample scripts that can be used.
+
 
 ## Reproducing the Experiments
 
@@ -61,7 +84,7 @@ First, we create and save datasets for each of our tasks, as listed in `config.p
 * `--create_custom_prompts`: Set to `True` for SampleGen Prompt, `False` for Regular Prompt.
 * `--dataset_type`: Either `train+val` or `test`.
 * `--making_adv`: Set to `True` if the in-context samples for SampleGen should come from a different task than the target.
-* `--for_samplegen_pipeline`: Set to `True` if generating a gold pipeline dataset. This ensures that the samples will be formatted correctly.
+* `--make_gold_pipeline_test`: Set to `True` if generating a gold pipeline test dataset. This ensures that the samples will be formatted correctly.
 
 For our experiments, the following dataset types must be created:
 
@@ -72,64 +95,68 @@ For our experiments, the following dataset types must be created:
 #### 1: Regular Prompt
 This is our baseline dataset, following the original FLAN dataset in prompt formatting. To ensure that the dataset matches the original FLAN as closely as possible, use all the tasks in `config.py`.
 
-```py    
-gen_all_tasks(num_data=10,
-              create_custom_prompts=False,
-              dataset_type="train+val",
-              convert_letter_choices=True,
-              )
+Create the datasets by running `create_prompts.py`:
+
+```bash    
+
+python3 create_prompts.py --num_datapoints 100 --create_custom_prompts "False" --dataset_type "train+val"
+
 ```
 
-The output will be a folder titled `flan_prompts`.
+The output will be a folder titled `flan_prompts` containing all the task datasets.
 
 
 #### 2: SampleGen Prompt
-To create our SampleGen Prompt, set the following arguments. Importantly, we set `create_custom_prompts=True`, which ensures that the samples will be 
+To create our SampleGen Prompt, set the following arguments. Importantly, we set `create_custom_prompts=True`, which ensures that the samples will be formatted in the necessary way.
 
-```py    
-gen_all_tasks(num_data=10,
-              create_custom_prompts=True,
-              dataset_type="train+val",
-              convert_letter_choices=True,
-              )
+Call `create_prompts.py` with the following arguments:
+
+```bash    
+
+python3 create_prompts.py --num_datapoints 100 --create_custom_prompts "True" --dataset_type "train+val"
+
 ```
-The output will be a folder titled `samplegen_prompts`.
+
+The output will be a folder titled `mix_prompts` containing all the task datasets.
 
 #### 3: Gold Pipeline Test Set
 
-Our Gold Pipeline experiments require the test set to be of a specific format. This must be generated and saved along with the other datasets. To ensure the correct formatting, both `create_custom_prompts` and `for_samplegen_pipeline` must be set to `True`.
+Our Gold Pipeline experiments require the test data to be of a specific format. This dataset must be generated and saved like the other datasets. To ensure the correct formatting, both `create_custom_prompts` and `make_gold_pipeline_test` must be set to `True`.
 
-```py    
-gen_all_tasks(num_data=10,
-              create_custom_prompts=True,
-              dataset_type="train+val",
-              for_samplegen_pipeline=True,
-              convert_letter_choices=True,
-              )
+Call `create_prompts.py` with the following arguments:
+
+```bash
+
+python3 create_prompts.py --num_datapoints 100 --create_custom_prompts "True" --dataset_type "test" --make_gold_pipeline_test "True"
+
 ```
+
 The output will be a folder titled `gold_pipeline_test`.
 
 
 ### Step 2: Training Mixture Generation
-Once the individual task datasets are created, we combine these datasets into a *training mixture*. This is done by `make_mixtures.py`. 
+Once the datasets in the `mix_prompts` and `flan_prompts` folders are created, we combine these datasets into a *training mixture*. 
 
-```py
-  mix_tasks(prompt_format="mix_prompts",
-            do_mixed_gold_pipeline=True,
-            setup_num="4"
-            )
-```
+This is done by calling `make_mixtures.py`:
 
-## Model Training
-Once the dataset(s) have been created, call `train.sh` with the desired parameters, e.g.
+```bash    
+
+python3 make_mixtures.py --prompt_format "mix_prompts"
+python3 make_mixtures.py --prompt_format "flan_prompts"
 
 ```
---slurm_job_id $SLURM_JOB_ID --model_path_idx 1 --model_size_idx 1 --num_epochs 1 --prompts_type 0 --num_train 20000 --batch_size 2
+
+## Step 3: Model Training
+Once the dataset(s) have been created, call `train.py` with the desired parameters, e.g.:
+
+```bash
+python3 train.py --model_path_idx 1 --model_size_idx 1 --num_epochs 1 --prompts_type 0 --num_train 20000 --batch_size 2
 ```
 The model will be saved to the `saved_models` folder and will have a unique name generated according to the timestamp at the start of training.
 
 #### Important Parameters
 * `--prompts_type`: The type of prompt to train on, as listed in `train.py`.
+
 
 ## Model Testing
 For model testing, call one of the two testing scripts: `test_regularprompt.sh` or `test_samplegen+pipeline.sh`.

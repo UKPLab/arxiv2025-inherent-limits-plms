@@ -514,7 +514,7 @@ def create_mix_prompts(part_1,
                        task2_name=None,
                        task2_data=None,
                        corrupt_samples=False,
-                       for_samplegen_pipeline=False,
+                       make_gold_pipeline_test=False,
                        do_unify=False,
                        convert_letter_choices=False
                        ):
@@ -648,7 +648,7 @@ def create_mix_prompts(part_1,
                                                 )
             inputs.append(target_prompt)
 
-        elif making_test and for_samplegen_pipeline:
+        elif making_test and make_gold_pipeline_test:
             # If formatting a test sample for the samplegen pipeline, don't add IC samples
             # Simply format the test sample and return it to the calling code in test.py
             main_sample_parsed, label, main_sample_options = format_sample(
@@ -786,7 +786,7 @@ def create_and_save_dataset(dataset_name,
                             create_custom_prompts,
                             making_adv,
                             corrupt_samples,
-                            for_samplegen_pipeline,
+                            make_gold_pipeline_test,
                             do_unify,
                             convert_letter_choices,
                             ablation_setup_name=None
@@ -877,7 +877,7 @@ def create_and_save_dataset(dataset_name,
                                      task2_name=task2_name,
                                      task2_data=task2_data,
                                      corrupt_samples=corrupt_samples,
-                                     for_samplegen_pipeline=for_samplegen_pipeline,
+                                     make_gold_pipeline_test=make_gold_pipeline_test,
                                      do_unify=do_unify,
                                      convert_letter_choices=convert_letter_choices
                                      )
@@ -907,7 +907,7 @@ def make_dataset(type,
                  create_custom_prompts,
                  making_adv,
                  corrupt_samples,
-                 for_samplegen_pipeline,
+                 make_gold_pipeline_test,
                  do_unify,
                  convert_letter_choices,
                  ablation_setup_name=None
@@ -945,7 +945,7 @@ def make_dataset(type,
             create_custom_prompts=create_custom_prompts,
             making_adv=making_adv,
             corrupt_samples=corrupt_samples,
-            for_samplegen_pipeline=for_samplegen_pipeline,
+            make_gold_pipeline_test=make_gold_pipeline_test,
             do_unify=do_unify,
             convert_letter_choices=convert_letter_choices,
             ablation_setup_name=ablation_setup_name
@@ -968,7 +968,7 @@ def gen_all_tasks(num_data,
                   dataset_type,
                   making_adv=False,
                   corrupt_samples=False,
-                  for_samplegen_pipeline=False,
+                  make_gold_pipeline_test=False,
                   do_unify=False,
                   convert_letter_choices=False,
                   ablation_setup_name=None
@@ -990,7 +990,7 @@ def gen_all_tasks(num_data,
                                create_custom_prompts=create_custom_prompts,
                                making_adv=making_adv,
                                corrupt_samples=corrupt_samples,
-                               for_samplegen_pipeline=for_samplegen_pipeline,
+                               make_gold_pipeline_test=make_gold_pipeline_test,
                                do_unify=do_unify,
                                convert_letter_choices=convert_letter_choices,
                                ablation_setup_name=ablation_setup_name
@@ -1003,7 +1003,7 @@ if __name__ == "__main__":
                   dataset_type=config.dataset_type,
                   making_adv=config.make_adv_prompts,          
                   corrupt_samples=config.corrupt_samples,
-                  for_samplegen_pipeline=config.for_samplegen_pipeline,
+                  make_gold_pipeline_test=config.make_gold_pipeline_test,
                   do_unify=config.do_unify,
                   convert_letter_choices=config.convert_letter_choices,
                   )

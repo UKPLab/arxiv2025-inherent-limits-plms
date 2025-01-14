@@ -18,7 +18,7 @@ def create_parser():
     parser.add_argument('--no_answer_samplegen', type=str, default="False")
     parser.add_argument('--corrupt_samples', type=str, default="False")
     parser.add_argument('--make_adv_prompts', type=str, default="False")
-    parser.add_argument('--for_samplegen_pipeline', type=str, default="False")
+    parser.add_argument('--make_gold_pipeline_test', type=str, default="False")
     parser.add_argument('--do_unify', type=str, default="False")
     parser.add_argument('--convert_letter_choices', type=bool, default=True)
 

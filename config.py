@@ -262,7 +262,7 @@ num_datapoints = args.num_datapoints
 dataset_type = args.dataset_type
 num_inner = args.num_inner
 convert_letter_choices = args.convert_letter_choices
-for_samplegen_pipeline = args.for_samplegen_pipeline
+make_gold_pipeline_test = args.make_gold_pipeline_test
 do_unify = args.do_unify
 
 # Paths for saving created datasets
