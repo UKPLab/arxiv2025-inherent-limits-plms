@@ -149,7 +149,7 @@ Once the dataset(s) have been created, call `train.py` with the desired paramete
 ```bash
 python3 train.py --model_path_idx 1 --model_size_idx 1 --num_epochs 1 --prompts_type 0 --num_train 20000 --batch_size 2
 ```
-The model will be saved to the `saved_models` folder and will have a unique name generated according to the timestamp at the start of training.
+The model will be saved to the `saved_models` folder and will have a unique name generated according to the timestamp at the start of training. Information about the training run (e.g. GPU architecture, hyperparameters) is saved to `train_logs.csv`.
 
 #### Important Parameters
 * `--prompts_type`: The type of prompt to train on, as listed in `train.py`.
@@ -161,6 +161,10 @@ For model testing, call one of the two testing scripts: `test_regularprompt.sh` 
 #### Important Parameters
 * `--run_name`: The unique timestamp of the model in `saved_models`.
 
+The results are written to `eval_logs.csv` and `bertscore_evals.csv`
+
+* `eval_logs.csv` contains the raw accuracy scores for multiple-choice tasks, as well as scores for generative tasks.
+* `bertscore_evals.csv` contains scores for tasks evaluated using BERTScore Accuracy (mostly multiple choice tasks). The BERTScore Accuracy takes priority over the raw scores for these tasks in `eval_logs.csv`.
 
 ## Cite
 
