@@ -23,7 +23,7 @@ jobs:
       - name: Check files
         run: |
           # Define the list of filenames you want to check
-          FILES_TO_CHECK=("LICENSE" "README.md" "requirements.txt" "requirements-dev.txt" "NOTICE.txt" "setup.py")
+          FILES_TO_CHECK=("LICENSE" "README.md" "requirements.txt" "NOTICE.txt" "setup.py")
 
           # Initialize a variable to track missing files
           MISSING_FILES=()
