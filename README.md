@@ -172,13 +172,13 @@ If you found this repository helpful, please cite our paper:
 
 ```
 @InProceedings{smith:20xx:CONFERENCE_TITLE,
-  author    = {Smith, John},
-  title     = {My Paper Title},
-  booktitle = {Proceedings of the 20XX Conference on XXXX},
+  author    = {},
+  title     = {},
+  booktitle = {},
   month     = mmm,
   year      = {20xx},
-  address   = {Gotham City, USA},
-  publisher = {Association for XXX},
+  address   = {},
+  publisher = {},
   pages     = {XXXX--XXXX},
   url       = {http://xxxx.xxx}
 }
