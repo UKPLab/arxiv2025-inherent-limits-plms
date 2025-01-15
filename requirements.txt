@@ -15,4 +15,5 @@ sacrebleu
 scikit-learn
 torch==2.5.1
 transformers==4.47.1
+trl
 vllm==0.6.6.post1
