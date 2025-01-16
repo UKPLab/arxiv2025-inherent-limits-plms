@@ -8,7 +8,7 @@ These are:
     * Paper: [Newsroom: A Dataset of 1.3 Million Summaries with Diverse Extractive Strategies](https://aclanthology.org/N18-1065/) (Grusky et al., 2018)
 
 * **Opin iDebate & Opin Movie:** http://www.ccs.neu.edu/home/luwang/
-* Paper: [Neural Network-Based Abstract Generation for Opinions and Arguments](https://aclanthology.org/N16-1007/) (Wang & Ling, 2016)
+   * Paper: [Neural Network-Based Abstract Generation for Opinions and Arguments](https://aclanthology.org/N16-1007/) (Wang & Ling, 2016)
 
 * **Story Cloze:** https://cs.rochester.edu/nlp/rocstories/
     * Fill out the form provided by the authors to get access to the test dataset
