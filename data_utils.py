@@ -277,7 +277,7 @@ def make_label_field(example):
 
 def load_hf_dataset(dataset_name, split=None, do_partitioning=False):
     print("LOADING DATA SPLIT:", split)
-    cutoff_num = 100000
+    cutoff_num = 100000        # Set this to avoid fully loading massive datasets
     args_dict = {"split": split,
                  "trust_remote_code": True}
 
@@ -305,7 +305,7 @@ def load_hf_dataset(dataset_name, split=None, do_partitioning=False):
     
     elif dataset_name == "cnn_dailymail":
         args_dict["path"] = dataset_name
-        args_dict["name"] = "3.0.0"   # FLAN uses 3.1.0??
+        args_dict["name"] = "3.0.0"   # FLAN uses 3.1.0, but this is unavailable on HF
     
     elif dataset_name == "web_nlg":
         args_dict["path"] = dataset_name
@@ -537,7 +537,7 @@ def load_hf_dataset(dataset_name, split=None, do_partitioning=False):
 
     # Some datasets require post-processing and filtering
     if dataset_name == "snli":
-        # Remove "unsure" samples. Source: (TODO: CITE)
+        # Remove samples without a consensus label. Source: https://huggingface.co/datasets/stanfordnlp/snli
         dataset = dataset.filter(lambda item: item["label"] != -1)  
         dataset = dataset.add_column("options", [""] * len(dataset))
     elif dataset_name == "fix_punct":

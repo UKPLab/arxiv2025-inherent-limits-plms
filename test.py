@@ -135,6 +135,8 @@ def format_ic_bigbench(sample, inner_template, task_name, task_dataset, ic_examp
     return sample
 
 def filter_bad_samples(example):
+    # These samples caused the regex search to hang, since they had too many matches.
+    # We can simply remove these.
     val = True
     if "Applied for full membership" in example["text"]:
         val = False
@@ -605,11 +607,11 @@ def run_test(model_name,
                  }
 
     # Load a trained or base model
-    saved_model = "/storage/ukp/work/bigoulaeva/CoT_Recovery/src/saved_models/" + config.args.run_name
+    saved_model = config.path + "saved_models/" + config.args.run_name
     if config.args.run_name == "base":
         saved_model = None
         if not from_samplegen:
-            out_file = "/storage/ukp/work/bigoulaeva/CoT_Recovery/src/saved_models/base_model_evals/" + eval_name + ".csv"
+            out_file = config.path + "saved_models/base_model_evals/" + eval_name + ".csv"
         elif from_samplegen:
             target_folder = config.path + "saved_models/" + config.samplegen_model + "/"
             samplegen_eval_path = "samplegen_pipeline_evals"
@@ -861,7 +863,7 @@ def run_test(model_name,
                 responses["gold_options"].append(orig_options[idx])
             elif from_samplegen:
                 if config.sample_source == "model":
-                    if orig_options[0] != "":   # Otherwise it breaks for tasks without options (batch_start+idx too high by 1).....
+                    if orig_options[0] != "":   # Otherwise it breaks for tasks without options (batch_start+idx too high by 1)
                         responses["gold_options"].append(orig_options[batch_start+idx][0])
                     else:
                         responses["gold_options"].append("")

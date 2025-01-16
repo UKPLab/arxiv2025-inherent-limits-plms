@@ -1,5 +1,5 @@
 # The Inherent Limits of Pretrained LLMs: The Unexpected Convergence of Instruction Tuning and In-Context Learning Capabilities
-[![Arxiv](https://img.shields.io/badge/Arxiv-YYMM.NNNNN-red?style=flat-square&logo=arxiv&logoColor=white)](https://put-here-your-paper.com)
+[![Arxiv](https://img.shields.io/badge/Arxiv-2501.08716-red?style=flat-square&logo=arxiv&logoColor=white)](https://arxiv.org/abs/2501.08716)
 [![License](https://img.shields.io/github/license/UKPLab/arxiv2025-inherent-limits-plms)](https://github.com/UKPLab/arxiv2025-inherent-limits-plms/blob/main/LICENSE)
 [![Python Versions](https://img.shields.io/badge/Python-3.9-blue.svg?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 
@@ -171,17 +171,16 @@ The results are written to `eval_logs.csv` and `bertscore_evals.csv`
 If you found this repository helpful, please cite our paper:
 
 ```
-@InProceedings{smith:20xx:CONFERENCE_TITLE,
-  author    = {},
-  title     = {},
-  booktitle = {},
-  month     = mmm,
-  year      = {20xx},
-  address   = {},
-  publisher = {},
-  pages     = {XXXX--XXXX},
-  url       = {http://xxxx.xxx}
+@misc{bigoulaeva2025inherentlimitspretrainedllms,
+      title={The Inherent Limits of Pretrained LLMs: The Unexpected Convergence of Instruction Tuning and In-Context Learning Capabilities}, 
+      author={Irina Bigoulaeva and Harish Tayyar Madabushi and Iryna Gurevych},
+      year={2025},
+      eprint={2501.08716},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2501.08716}, 
 }
+
 ```
 
 ## Disclaimer
